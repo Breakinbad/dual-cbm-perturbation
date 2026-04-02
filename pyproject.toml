@@ -1,0 +1,23 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "scgpt-perturbation"
+version = "0.1.0"
+description = "Perturbation prediction package built on top of scGPT"
+requires-python = ">=3.10"
+dependencies = [
+  "torch",
+  "numpy",
+  "pandas",
+  "scanpy",
+  "anndata",
+  "scipy",
+  "pyyaml",
+  "mygene",
+  "tqdm",
+]
+
+[tool.setuptools.packages.find]
+include = ["perturbation*"]

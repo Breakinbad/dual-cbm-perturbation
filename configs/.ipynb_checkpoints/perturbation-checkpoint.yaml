@@ -1,0 +1,73 @@
+experiment_name: tahoe_multitask
+seed: 42
+data:
+  scgpt_root: ./scGPT/scgpt
+  adata_path: /path/to/scaffold_tahoe.h5ad
+  vocab_path: /path/to/vocab.pt
+  checkpoint_path: /path/to/pretrained_or_finetuned_scgpt.pt
+  gene_vocab_path: /path/to/gene_vocab.pt
+  drug_target_vectors_path: /path/to/drug_target_vectors.pt
+  smiles_embeddings_path: /path/to/molformer.pt
+  averaged_df_train_path: /path/to/averaged_df_train.pkl
+  averaged_df_test_path: /path/to/averaged_df_test.pkl
+  cache_dir: ./artifacts/cache
+
+preprocessing:
+  de_top_k: 50
+  threshold_magnitude: 0.05
+  condition_key: condition
+  control_label: control
+  cell_type_key: cell_type
+  split_key: split
+
+model:
+  pad_token: "<pad>"
+  pad_value: 0
+  pert_pad_id: 2
+  ntoken: 60697
+  embsize: 512
+  nhead: 8
+  d_hid: 512
+  nlayers: 12
+  nlayers_cls: 3
+  n_cls: 50
+  dropout: 0.2
+  do_mvc: false
+  domain_spec_batchnorm: false
+  cell_emb_style: cls
+  mvc_decoder_style: "inner product"
+  ecs_threshold: 0.3
+  explicit_zero_prob: false
+  use_fast_transformer: false
+  fast_transformer_backend: flash
+  pre_norm: false
+
+  expr_task_id: 0
+  direction_task_id: 1
+
+  freeze_backbone: true
+  trainable_substrings:
+    - adapter
+    - cond_proj
+    - decoder
+    - task_table
+    - concept_bottleneck
+    - z_to_drug
+    - z_gate
+    - mol_proj
+
+  lr: 5.0e-4
+  weight_decay: 1.0e-3
+
+training:
+  epochs: 20
+  batch_size: 8
+  grad_accum_steps: 4
+  max_grad_norm: 1.0
+  warmup_epochs: 3
+  early_stopping_patience: 8
+  task_sampling_probs: [0.5, 0.5]
+  num_workers: 4
+
+evaluation:
+  de_threshold: 0.25
